@@ -20,13 +20,15 @@ class Manager
 		bool wasEnded;
 		mutex mt;
 	public:
-		void setwasEnded() { mt.lock(); wasEnded = true; mt.unlock(); 
-		Node(Target * target, Manager * manager)
+		void setwasEnded(){ mt.lock(); wasEnded = true; mt.unlock(); }
+	
+		Node(Target &target, Manager &manager)
 		{
 			wasEnded = false;
 			//th = thread([&]() {Manager::find_file(target, manager, *this); });
 			th.detach();
 		}
+		
 	};
 	class Target
 	{
