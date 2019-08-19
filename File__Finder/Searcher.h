@@ -20,7 +20,7 @@ class Manager
 		bool wasEnded;
 		mutex mt;
 	public:
-		void setwasEnded() { mt.lock(); wasEnded = true; mt.unlock(); 
+		void setwasEnded() { mt.lock(); wasEnded = true; mt.unlock(); }
 		Node(Target * target, Manager * manager)
 		{
 			wasEnded = false;
