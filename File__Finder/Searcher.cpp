@@ -65,12 +65,19 @@ void Manager::stratSearch()
 			int count = (threads.size() - 8) > pathesToCalcul.size() ? 8 - threads.size() : pathesToCalcul.size();
 			for (int i = 0; i < count; i++)
 			{
+				mt.lock();
 				//threads.push_back(Node(target,*this));
+				mt.unlock();
 			}
 		}
 		for (auto it = threads.begin(); it!=threads.end(); it++)
 		{
-			//if(!it->wasEnded)
+			if (!it->getState())
+			{
+				mt.lock();
+				//it = threads.erase(it);
+				mt.unlock();
+			}
 		}
 	}
 	cout << "***************************FILE WAS FOUND***************************\n";

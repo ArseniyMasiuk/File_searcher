@@ -11,9 +11,21 @@
 using namespace boost::filesystem;
 using namespace std;
 
+
+
+//void find_file(Target & target, Manager & manager, Node & node);
+
 class Manager
 {
+
 	class Target;
+	class Node;
+	
+	friend class Tarset;
+	friend class Node;
+	//friend void find_file(Target & target, Manager & manager, Node & node);
+	static void find_file(Target & target, Manager & manager, Node & node);
+
 	class Node
 	{
 		thread th;
@@ -21,14 +33,14 @@ class Manager
 		mutex mt;
 	public:
 		void setwasEnded(){ mt.lock(); wasEnded = true; mt.unlock(); }
-	
+		bool getState() { mt.lock(); bool temp = wasEnded; mt.unlock(); return temp; }
+
 		Node(Target &target, Manager &manager)
 		{
 			wasEnded = false;
-			//th = thread([&]() {Manager::find_file(target, manager, *this); });
+			th = thread([&]() {find_file(target, manager, *this); });
 			th.detach();
 		}
-		
 	};
 	class Target
 	{
@@ -46,15 +58,13 @@ class Manager
 
 	}target;
 
-	friend class Tarset;
-	friend class Node;
 	vector<Node> threads;               //vector of threads what do search
 	vector<string> pathesToCalcul;      // vector of folders to check
 	mutex mt;                           // to synchonize threads
 
 	string getPathToCalculate();
 	void setPathForCheck(string path);
-	static void find_file( Target & target, Manager & manager, Node & node);
+	
 public:
 
 	Manager(string wanted, string startFolder)
