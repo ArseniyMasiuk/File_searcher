@@ -58,22 +58,22 @@ void Manager::find_file( Target & target, Manager & manager, Node & node)
 
 void Manager::stratSearch()
 {
-	//while (target.getState())
-	//{
-	//	if (threads.size() <= 8)
-	//	{
-	//		int count = (threads.size() - 8) > pathesToCalcul.size() ? 8 - threads.size() : pathesToCalcul.size();
-	//		for (int i = 0; i < count; i++)
-	//		{
-	//			//threads.push_back(Node(target,*this));
-	//		}
-	//	}
-	//	for (auto it = threads.begin(); it!=threads.end(); it++)
-	//	{
-	//		//if(!it->wasEnded)
-	//	}
-	//}
-	//cout << "***************************FILE WAS FOUND***************************\n";
-	//cout << target.getWanted() << endl;
-	//cout << "********************************************************************\n";
+	while (target.getState())
+	{
+		if (threads.size() <= 8)
+		{
+			int count = (threads.size() - 8) > pathesToCalcul.size() ? 8 - threads.size() : pathesToCalcul.size();
+			for (int i = 0; i < count; i++)
+			{
+				//threads.push_back(Node(target,*this));
+			}
+		}
+		for (auto it = threads.begin(); it!=threads.end(); it++)
+		{
+			//if(!it->wasEnded)
+		}
+	}
+	cout << "***************************FILE WAS FOUND***************************\n";
+	cout << target.getWanted() << endl;
+	cout << "********************************************************************\n";
 }
