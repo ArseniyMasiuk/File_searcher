@@ -8,6 +8,6 @@ int main()
 	string myFile = "fucking_name.txt";
 	
 	Manager man(myFile, myPath);
-
+	man.stratSearch();
 	system("pause");
 }

@@ -54,11 +54,12 @@ class Manager
 
 		string getWanted() { mt.lock();  string temp = wanted; mt.unlock(); return temp; }
 		void setFindedFie(string path) { mt.lock();  pathToFindFile = path; mt.unlock(); }
+		string getPathToWanted() { mt.lock(); string temp = pathToFindFile; mt.unlock(); return temp; }
 		void setTarget(string targ) { wanted = targ; }
 
 	}target;
 
-	vector<Node> threads;               //vector of threads what do search
+	vector<Node*> threads;               //vector of threads what do search
 	vector<string> pathesToCalcul;      // vector of folders to check
 	mutex mt;                           // to synchonize threads
 
