@@ -2,24 +2,25 @@
 #include <thread>
 #include <iostream>
 #include <vector>
+#include <deque>
 #include<mutex>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-
+#define THREADS_COUNT 8
 using namespace boost::filesystem;
 using namespace std;
-
 
 
 //void find_file(Target & target, Manager & manager, Node & node);
 
 class Manager
 {
-
+	
 	class Target;
 	class Node;
+	
 	
 	friend class Tarset;
 	friend class Node;
@@ -30,10 +31,22 @@ class Manager
 	{
 		thread th;
 		bool wasEnded;
-		mutex mt;
+		static mutex mt;
 	public:
-		void setwasEnded(){ mt.lock(); wasEnded = true; mt.unlock(); }
-		bool getState() { mt.lock(); bool temp = wasEnded; mt.unlock(); return temp; }
+	
+	
+		void setwasEnded()
+		{
+			mt.lock();
+			wasEnded = true;
+			mt.unlock();
+		}
+		bool getState()
+		{
+			mt.lock();
+			bool temp = wasEnded;
+			mt.unlock(); return temp;
+		}
 
 		Node(Target &target, Manager &manager)
 		{
@@ -60,12 +73,12 @@ class Manager
 	}target;
 
 	vector<Node*> threads;               //vector of threads what do search
-	vector<string> pathesToCalcul;      // vector of folders to check
-	mutex mt;                           // to synchonize threads
+	deque<string> pathesToCalcul;      // vector of folders to check
+	mutex mt1;                // to synchonize threads
 
 	string getPathToCalculate();
 	void setPathForCheck(string path);
-	
+	//bool haveSameType(string type, string filname);
 public:
 
 	Manager(string wanted, string startFolder)
@@ -74,4 +87,25 @@ public:
 		target.setTarget(wanted);
 	}
 	void stratSearch();
+
+	~Manager()
+	{
+		for (auto it = threads.begin();
+			it != threads.end();
+			)
+		{
+			//Node::mt.lock();
+			if ((*it)->getState())
+			{
+				delete *it;
+				it = threads.erase(it);
+			}
+			else it++;
+			//Node::mt.unlock();
+
+		}
+
+	}
 };
+
+
