@@ -1,5 +1,6 @@
 #include "Searcher.h"
 
+mutex Manager::Node::mt;
 //bool Manager::haveSameType(string type,string filename)
 //{
 //	if (type.size() > filename.size()) return false;
@@ -17,12 +18,12 @@ string Manager::getPathToCalculate()
 	string temp = pathesToCalcul.size() ? pathesToCalcul[0] : "";
 	if (temp != "") 
 	{
-		//cout << pathesToCalcul[0] << endl;
-		pathesToCalcul.erase(pathesToCalcul.begin());
+		cout << pathesToCalcul[0] << endl;
+		pathesToCalcul.pop_front();
 	}
 	else
 	{
-		//cout << "here is no pathes in vector\n";
+		cout << "here is no pathes in vector\n";
 	}
 	mt1.unlock();
 	return temp;
@@ -66,14 +67,14 @@ void Manager::find_file( Target & target, Manager & manager, Node & node)
 						return;
 					}
 				}
-				/*node.setwasEnded();
-				return;*/
+				node.setwasEnded();
+				return;
 			}
 			catch (boost::filesystem::filesystem_error &e)
 			{
 				cout << e.what() << endl;
-				//node.setwasEnded();
-				//return;
+				node.setwasEnded();
+				return;
 			}
 		}
 	}
@@ -82,11 +83,13 @@ void Manager::find_file( Target & target, Manager & manager, Node & node)
 
 void Manager::stratSearch()
 {
-	while (!target.getState())
+	do
 	{
-		if (threads.size() <= 0)
+		if(!target.getState())
+		if (threads.size() < THREADS_COUNT)
 		{
-			int count = 100;//!(threads.size() && pathesToCalcul.size() )? 1 : 0;//(threads.size() - 8) > pathesToCalcul.size() ? 8 - threads.size() : pathesToCalcul.size();
+			int count =(threads.size() - THREADS_COUNT) > pathesToCalcul.size() ? THREADS_COUNT - threads.size() : pathesToCalcul.size();
+			if (count > pathesToCalcul.size()) count = pathesToCalcul.size();
 			for (int i = 0; i < count; i++)
 			{
 				mt1.lock();
@@ -95,22 +98,35 @@ void Manager::stratSearch()
 				mt1.unlock();
 			}
 		}
-		/*for (auto it = threads.begin(); it != threads.end(); it++)
+		try
 		{
-			if (!(*it)->getState())
-			{
-				mt1.lock();
-				delete *it;
-				it = threads.erase(it);
-				mt1.unlock();
-			}
 
-		}*/
-	}
+			for (auto it = threads.begin(); 
+				      it != threads.end(); 
+				     )
+			{
+				//Node::mt.lock();
+				if ((*it)->getState())
+				{
+					delete *it;
+					it = threads.erase(it);
+				}
+				else it++;
+				//Node::mt.unlock();
+
+			}
+		}
+		catch (exception &e)
+		{
+			cout << e.what() << endl;
+		}
+	} while (!target.getState());
+
 	mt1.lock();
 	cout << "***************************FILE WAS FOUND***************************\n";
 	cout << target.getPathToWanted() << endl;
 	cout << "********************************************************************\n";
 	mt1.unlock();
+
 }
 //E:\QtProjects\HELPER\build-HELPER-Desktop_Qt_5_4_2_MinGW_32bit-Debug\release
