@@ -18,12 +18,12 @@ string Manager::getPathToCalculate()
 	string temp = pathesToCalcul.size() ? pathesToCalcul[0] : "";
 	if (temp != "") 
 	{
-		cout << pathesToCalcul[0] << endl;
+		//cout << pathesToCalcul[0] << endl;
 		pathesToCalcul.pop_front();
 	}
 	else
 	{
-		cout << "here is no pathes in vector\n";
+		//cout << "here is no pathes in vector\n";
 	}
 	mt1.unlock();
 	return temp;
@@ -63,7 +63,7 @@ void Manager::find_file( Target & target, Manager & manager, Node & node)
 						target.setFindedFie(itr->path().string());
 						target.setwasFound();
 						node.setwasEnded();
-						cout << itr->path().string() << endl;
+						//cout << itr->path().string() << endl;
 						return;
 					}
 				}

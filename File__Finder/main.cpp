@@ -40,6 +40,11 @@ int main()
 
 	/*path p = "E:/";
 	path pp;
+	uncomment thread to compare speed of recursive mothood and searching 
+	with one thread but with deque of pathes to process.
+	also you can to run in multithred version, just check define THREADS_COUNT 
+
+	!!! dont forget to change path where searching have strarts and  existing file name
 
 	thread th([&]() {find_file(p, myFile, pp); });*/
 	Manager man(myFile, myPath);
