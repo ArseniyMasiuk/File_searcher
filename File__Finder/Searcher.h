@@ -8,7 +8,7 @@
 #include <boost/filesystem/fstream.hpp>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#define THREADS_COUNT 8
+#define THREADS_COUNT 1
 using namespace boost::filesystem;
 using namespace std;
 
