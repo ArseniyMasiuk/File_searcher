@@ -1,15 +1,24 @@
 #include "Searcher.h"
-
+//#define USE_LOOP_IN_FUNCTION
 mutex Manager::Node::mt;
-//bool Manager::haveSameType(string type,string filename)
-//{
-//	if (type.size() > filename.size()) return false;
-//	for (auto it1 = type.rbegin(),it2 = filename.rbegin(); it1 != type.rend(); it1++,it2++)
-//	{
-//		if (it1 != it2) return false;
-//	}
-//	return true;
-//}
+bool compare(string base, string whatSearch, bool compareNames/*false if need to compare type*/)
+{
+	if (compareNames)//compareNames
+	{
+		return base == whatSearch;
+	}
+	else //comparetypes
+	{
+		rotate(base.begin(), base.begin() + 1, base.end());
+		rotate(whatSearch.begin(), whatSearch.begin() + 1, whatSearch.end());
+		for (int i = 0; i < whatSearch.size(); i++)
+		{
+			if (base[i] != whatSearch[i]) return false;
+		}
+		return true;
+		
+	}
+}
 
 
 string Manager::getPathToCalculate()
@@ -39,7 +48,8 @@ void Manager::setPathForCheck(string path)
 void Manager::find_file( Target & target, Manager & manager, Node & node)
 {
 	path dir_path;
-	while (!(target.getState()))
+	bool whatSearch = target.getWhatSearch();
+//	while (!(target.getState()))
 	{
 		dir_path = manager.getPathToCalculate();
 		if (dir_path.string() != "")
@@ -58,13 +68,17 @@ void Manager::find_file( Target & target, Manager & manager, Node & node)
 					{
 						manager.setPathForCheck(itr->path().string());
 					}
-					else if (itr->path().filename() == target.getWanted()) // see below
+					else if (compare(itr->path().filename().string(), target.getWanted(), whatSearch)) // see below
 					{
 						target.setFindedFie(itr->path().string());
-						target.setwasFound();
-						node.setwasEnded();
-						//cout << itr->path().string() << endl;
-						return;
+						if (whatSearch)
+						{
+
+							target.setwasFound();
+							node.setwasEnded();
+							//cout << itr->path().string() << endl;
+							return;
+						}
 					}
 				}
 				node.setwasEnded();
@@ -72,7 +86,8 @@ void Manager::find_file( Target & target, Manager & manager, Node & node)
 			}
 			catch (boost::filesystem::filesystem_error &e)
 			{
-				cout << e.what() << endl;
+				//cout << e.what() << endl;
+				cout << "exception in find_file function\n";
 				node.setwasEnded();
 				return;
 			}
@@ -97,24 +112,27 @@ void Manager::stratSearch()
 
 				mt1.unlock();
 			}
+			cout << "******************************PUSH_TEW_THREADS******************************   " << count << endl;
 		}
 		try
 		{
-
+			int count = 0;
 			for (auto it = threads.begin(); 
-				      it != threads.end(); 
-				     )
+				      it != threads.end(); )
 			{
 				//Node::mt.lock();
 				if ((*it)->getState())
 				{
 					delete *it;
 					it = threads.erase(it);
+					count++;
 				}
 				else it++;
 				//Node::mt.unlock();
 
 			}
+			cout << "******************************DELETE_THREADS******************************   " << count << endl;
+
 		}
 		catch (exception &e)
 		{
@@ -124,7 +142,12 @@ void Manager::stratSearch()
 
 	mt1.lock();
 	cout << "***************************FILE WAS FOUND***************************\n";
-	cout << target.getPathToWanted() << endl;
+	vector<string>& targets = target.getPathToWanted();
+	for (auto it = targets.begin(); it != targets.end(); it++)
+	{
+
+		cout << *it << endl;
+	}
 	cout << "********************************************************************\n";
 	mt1.unlock();
 

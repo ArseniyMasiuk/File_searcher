@@ -34,8 +34,8 @@ int main()
 {
 	setlocale(LC_ALL, "Russian");
 
-	string myPath = "E:/";
-	string myFile = "fucking_name.txt";
+	string myPath = "E:\test";
+	string myFile = ".txt";
 	
 
 	/*path p = "E:/";
@@ -47,7 +47,7 @@ int main()
 	!!! dont forget to change path where searching have strarts and  existing file name
 
 	thread th([&]() {find_file(p, myFile, pp); });*/
-	Manager man(myFile, myPath);
+	Manager man(myFile, myPath,false);
 	man.stratSearch();
 	//th.join();
 	system("pause");

@@ -57,7 +57,8 @@ class Manager
 	};
 	class Target
 	{
-		string pathToFindFile;
+		vector<string> pathToFindFile;
+		bool isFile = true;
 		string wanted;
 		bool wasFound = false;
 		mutex mt;
@@ -66,9 +67,10 @@ class Manager
 		bool getState() { mt.lock(); bool temp = wasFound; mt.unlock(); return temp; }
 
 		string getWanted() { mt.lock();  string temp = wanted; mt.unlock(); return temp; }
-		void setFindedFie(string path) { mt.lock();  pathToFindFile = path; mt.unlock(); }
-		string getPathToWanted() { mt.lock(); string temp = pathToFindFile; mt.unlock(); return temp; }
-		void setTarget(string targ) { wanted = targ; }
+		void setFindedFie(string path) { mt.lock();  pathToFindFile.push_back(path); mt.unlock(); }
+		vector<string>& getPathToWanted() { mt.lock(); vector<string> &temp = pathToFindFile; mt.unlock(); return temp; }
+		void setTarget(string targ, bool isfile) { wanted = targ; isFile = isfile; }
+		bool getWhatSearch() { mt.lock(); bool temp = isFile; mt.unlock(); return temp; }
 
 	}target;
 
@@ -78,13 +80,12 @@ class Manager
 
 	string getPathToCalculate();
 	void setPathForCheck(string path);
-	//bool haveSameType(string type, string filname);
 public:
 
-	Manager(string wanted, string startFolder)
+	Manager(string wanted, string startFolder,bool isFile = true/*default search file*/)
 	{
 		pathesToCalcul.push_back(startFolder);
-		target.setTarget(wanted);
+		target.setTarget(wanted,isFile);
 	}
 	void stratSearch();
 
@@ -108,4 +109,5 @@ public:
 	}
 };
 
+bool compare(string type, string filname, bool compareNames = true/*false if need to compare type*/);
 
