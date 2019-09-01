@@ -9,11 +9,10 @@ bool compare(string base, string whatSearch, bool compareNames/*false if need to
 	}
 	else //comparetypes
 	{
-		rotate(base.begin(), base.begin() + 1, base.end());
-		rotate(whatSearch.begin(), whatSearch.begin() + 1, whatSearch.end());
-		for (int i = 0; i < whatSearch.size(); i++)
+		
+		for (auto it = whatSearch.rbegin(),it2 = base.rbegin();it!=whatSearch.rend();it++,it2++)
 		{
-			if (base[i] != whatSearch[i]) return false;
+			if (*it!=*it2) return false;
 		}
 		return true;
 		
@@ -73,7 +72,6 @@ void Manager::find_file( Target & target, Manager & manager, Node & node)
 						target.setFindedFie(itr->path().string());
 						if (whatSearch)
 						{
-
 							target.setwasFound();
 							node.setwasEnded();
 							//cout << itr->path().string() << endl;
@@ -101,7 +99,7 @@ void Manager::stratSearch()
 	do
 	{
 		if(!target.getState())
-		if (threads.size() < THREADS_COUNT)
+		if (threads.size() < THREADS_COUNT/* && !threads.size()*/)
 		{
 			int count =(threads.size() - THREADS_COUNT) > pathesToCalcul.size() ? THREADS_COUNT - threads.size() : pathesToCalcul.size();
 			if (count > pathesToCalcul.size()) count = pathesToCalcul.size();
@@ -112,10 +110,9 @@ void Manager::stratSearch()
 
 				mt1.unlock();
 			}
-			cout << "******************************PUSH_TEW_THREADS******************************   " << count << endl;
+			//cout << "******************************PUSH_NEW_THREADS******************************   " << count << endl;
 		}
-		try
-		{
+		
 			int count = 0;
 			for (auto it = threads.begin(); 
 				      it != threads.end(); )
@@ -131,25 +128,16 @@ void Manager::stratSearch()
 				//Node::mt.unlock();
 
 			}
-			cout << "******************************DELETE_THREADS******************************   " << count << endl;
+			//cout << "******************************DELETE_THREADS******************************   " << count << endl;
 
-		}
-		catch (exception &e)
-		{
-			cout << e.what() << endl;
-		}
-	} while (!target.getState());
+		
+	} while (!target.getState() && (pathesToCalcul.size()||threads.size()));
 
-	mt1.lock();
+	//mt1.lock();
 	cout << "***************************FILE WAS FOUND***************************\n";
-	vector<string>& targets = target.getPathToWanted();
-	for (auto it = targets.begin(); it != targets.end(); it++)
-	{
-
-		cout << *it << endl;
-	}
+	target.outPathes();
 	cout << "********************************************************************\n";
-	mt1.unlock();
+	//mt1.unlock();
 
 }
 //E:\QtProjects\HELPER\build-HELPER-Desktop_Qt_5_4_2_MinGW_32bit-Debug\release

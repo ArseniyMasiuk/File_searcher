@@ -34,8 +34,8 @@ int main()
 {
 	setlocale(LC_ALL, "Russian");
 
-	string myPath = "E:\test";
-	string myFile = ".txt";
+	string myPath = "E:/";
+	string myFile = ".txt";//fucking_name
 	
 
 	/*path p = "E:/";

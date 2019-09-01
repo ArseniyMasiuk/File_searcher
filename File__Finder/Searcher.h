@@ -8,7 +8,7 @@
 #include <boost/filesystem/fstream.hpp>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#define THREADS_COUNT 1
+#define THREADS_COUNT 100
 using namespace boost::filesystem;
 using namespace std;
 
@@ -67,10 +67,19 @@ class Manager
 		bool getState() { mt.lock(); bool temp = wasFound; mt.unlock(); return temp; }
 
 		string getWanted() { mt.lock();  string temp = wanted; mt.unlock(); return temp; }
-		void setFindedFie(string path) { mt.lock();  pathToFindFile.push_back(path); mt.unlock(); }
+		void setFindedFie(string path) { mt.lock(); /*cout << path << endl;*/ pathToFindFile.push_back(path); mt.unlock(); }
 		vector<string>& getPathToWanted() { mt.lock(); vector<string> &temp = pathToFindFile; mt.unlock(); return temp; }
 		void setTarget(string targ, bool isfile) { wanted = targ; isFile = isfile; }
 		bool getWhatSearch() { mt.lock(); bool temp = isFile; mt.unlock(); return temp; }
+		void outPathes()
+		{
+			mt.lock();
+			for (auto it = pathToFindFile.begin(); it != pathToFindFile.end(); it++)
+			{
+				cout << *it << endl;
+			}
+			mt.unlock();
+		}
 
 	}target;
 
