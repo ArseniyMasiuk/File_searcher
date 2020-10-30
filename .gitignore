@@ -6,6 +6,7 @@
 *.db
 Debug/
 .vs/
+*.bak
 File_Finder/Release/
 File_Finder/Debug/
 File_Finder/Release64/
