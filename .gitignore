@@ -1,2 +1,14 @@
-Debug/
-File__Finder.VC.VC.opendb
+*.opendb
+*.suo
+*.sdf
+*.user
+*.opensdf
+*.db
+.vs/
+_Bin/
+file_searcher/Release/
+file_searcher/Debug/
+file_searcher/Release64/
+file_searcher/Debug64/
+file_searcher/Debug32/
+file_searcher/Release32/
