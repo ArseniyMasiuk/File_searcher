@@ -1,2 +1,14 @@
+*.opendb
+*.suo
+*.sdf
+*.user
+*.opensdf
+*.db
 Debug/
-File__Finder.VC.VC.opendb
+.vs/
+File_Finder/Release/
+File_Finder/Debug/
+File_Finder/Release64/
+File_Finder/Debug64/
+File_Finder/Debug32/
+File_Finder/Release32/
